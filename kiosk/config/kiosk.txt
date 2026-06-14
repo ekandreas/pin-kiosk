@@ -1,0 +1,31 @@
+# =============================================================
+#  Flipperklubben Kiosk – konfiguration
+# =============================================================
+# Den här filen ligger på boot-partitionen (FAT32) och kan redigeras
+# från valfri dator: sätt i SD-kortet, öppna filen, spara, mata ut.
+# Ändringarna gäller efter omstart (eller inom någon minut).
+#
+# Format: NYCKEL=värde  (en per rad, # är kommentar)
+# -------------------------------------------------------------
+
+# Skärmens ID i admin. Bestämmer vilken info som hämtas och visas.
+MONITOR_ID=2
+
+# Bas-URL till API:t. Enheten anropar {API_BASE_URL}/api/monitors/{MONITOR_ID}.
+API_BASE_URL=https://flipperklubben.se
+
+# Hur ofta (sekunder) enheten frågar API:t i normalfallet.
+POLL_INTERVAL=300
+
+# Snabbaste/långsammaste pollning (sekunder). ttl i svaret kan tidigarelägga.
+MIN_POLL_INTERVAL=15
+MAX_POLL_INTERVAL=3600
+
+# Timeout för API-anrop (sekunder).
+HTTP_TIMEOUT=15
+
+# Valfri skärmrotation: lämna tomt, eller normal | left | right | inverted.
+ROTATE=
+
+# Valfria extra Chromium-flaggor (mellanslagsseparerade), oftast tomt.
+EXTRA_CHROMIUM_FLAGS=

@@ -1,0 +1,12 @@
+# Fallback-konfiguration för Flipperklubben Kiosk.
+# Värden här används om de inte finns i /boot/firmware/kiosk.txt.
+# Slutanvändare ska normalt redigera kiosk.txt på boot-partitionen i stället.
+
+MONITOR_ID=2
+API_BASE_URL=https://flipperklubben.se
+POLL_INTERVAL=300
+MIN_POLL_INTERVAL=15
+MAX_POLL_INTERVAL=3600
+HTTP_TIMEOUT=15
+ROTATE=
+EXTRA_CHROMIUM_FLAGS=

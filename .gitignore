@@ -1,0 +1,17 @@
+# pi-gen och byggartefakter
+build/pi-gen/
+build/stage-kiosk/01-install/files/payload/
+build/stage-kiosk/02-config/files/
+dist/
+*.img
+*.img.xz
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS/editor
+.DS_Store
+*.swp

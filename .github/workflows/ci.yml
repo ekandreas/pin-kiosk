@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Enhetstester
+        run: python3 -m unittest discover -s tests -v
+      - name: Kompilera Python
+        run: python3 -m py_compile kiosk/agent/kiosk_agent.py tests/test_agent.py
+      - name: ShellCheck
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          shellcheck kiosk/bin/kiosk-session.sh build/build.sh \
+            build/stage-kiosk/prerun.sh build/stage-kiosk/*/*.sh
