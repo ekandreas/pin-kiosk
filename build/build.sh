@@ -17,7 +17,7 @@ DIST="$ROOT/dist"
 PIGEN_DIR="${PIGEN_DIR:-$BUILD/pi-gen}"
 PIGEN_REPO="${PIGEN_REPO:-https://github.com/RPi-Distro/pi-gen.git}"
 PIGEN_BRANCH="${PIGEN_BRANCH:-arm64}"   # arm64 = 64-bitars Raspberry Pi OS
-FIRST_USER_PASS="${FIRST_USER_PASS:-flipper}"
+FIRST_USER_PASS="${FIRST_USER_PASS:-Magnetslingan10}"
 ALL_MODELS=(pi3 pi4 pi5)
 
 log() { printf '\033[1;36m[build]\033[0m %s\n' "$*"; }
@@ -53,6 +53,9 @@ for model in "${MODELS[@]}"; do
     rm -rf "$STAGE_DST/01-install/files/payload"
     mkdir -p "$STAGE_DST/01-install/files/payload"
     cp -r "$ROOT/kiosk/." "$STAGE_DST/01-install/files/payload/"
+    # Inga Python-cachefiler ska bakas in i imagen.
+    find "$STAGE_DST/01-install/files/payload" -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null || true
+    find "$STAGE_DST/01-install/files/payload" -name '*.pyc' -delete 2>/dev/null || true
 
     # Modellspecifik config.txt.
     mkdir -p "$STAGE_DST/02-config/files"

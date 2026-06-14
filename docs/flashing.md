@@ -43,11 +43,12 @@ standby-sida med instruktioner i stället för en svart skärm.
 
 ## Underhåll via SSH
 
-Inloggning är aktiverad. Standardanvändare: **`flipper`** / lösenord
-**`flipper`**. **Byt lösenordet** (`passwd`) på enheter som inte står säkert.
+Inloggning är aktiverad. Standardanvändare: **`flipperklubben`** / lösenord
+**`Magnetslingan10`** (samma som WiFi). **Byt lösenordet** (`passwd`) på enheter
+som inte står säkert.
 
 ```sh
-ssh flipper@<pi-ip>
+ssh flipperklubben@<pi-ip>
 sudo systemctl restart flipperklubben-kiosk   # starta om kiosken
 journalctl -u flipperklubben-kiosk -f         # se loggar
 ```

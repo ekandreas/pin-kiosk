@@ -161,7 +161,8 @@ Bygget använder pi-gen och kräver en **Debian/Ubuntu-host** (eller Docker).
 USE_DOCKER=1 ./build/build.sh pi4
 ```
 
-Färdiga images hamnar i `dist/`. Byt standardlösenordet vid behov:
+Färdiga images hamnar i `dist/`. SSH-användaren blir `flipperklubben` med
+lösenordet `Magnetslingan10` (samma som WiFi). Byt vid behov:
 
 ```sh
 FIRST_USER_PASS='ett-bra-lösenord' ./build/build.sh
@@ -195,8 +196,10 @@ Filen [`CLAUDE.md`](CLAUDE.md) ger AI-assistenten rätt kontext direkt – karta
 ## Säkerhet
 
 - Enheterna är **internt nätverk**-tänkta. SSH är aktiverat med användaren
-  `flipper` (default-lösenord `flipper`). **Byt lösenordet** på enheter som
-  inte står säkert (`passwd`), eller bygg med `FIRST_USER_PASS=…`.
+  `flipperklubben` (default-lösenord `Magnetslingan10`, samma som WiFi).
+  Det är medvetet enkelt att minnas – men innebär att alla med WiFi-nyckeln
+  också kan logga in. **Byt lösenordet** på enheter som inte står säkert
+  (`passwd`), eller bygg med `FIRST_USER_PASS=…`.
 - WiFi-nyckeln bakas in i imagen (`flipperklubben` / `Magnetslingan10`).
   Behandla färdiga images som känsliga och lägg dem inte publikt.
 - API:t som enheten anropar är publikt och kräver ingen autentisering.

@@ -72,6 +72,7 @@ ska aldrig krascha utan falla tillbaka på standby.
 
 - `build/build.sh` klonar och kör pi-gen som kräver root/Debian – kör inte
   bygget oombett på en dev-maskin; föreslå det, kör det inte automatiskt.
-- WiFi-nyckel och SSH-lösenord bakas in i images – behandla `dist/` som känsligt.
+- WiFi (`flipperklubben`/`Magnetslingan10`) och SSH (användare `flipperklubben`,
+  samma lösenord) bakas in i images – behandla `dist/` som känsligt.
 - `kiosk/systemd/*.service` kör X som användaren `kiosk` utan root via
   `Xwrapper.config` (`allowed_users=anybody`). Ändra inte utan att förstå seat/logind.
