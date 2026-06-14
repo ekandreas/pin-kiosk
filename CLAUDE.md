@@ -18,7 +18,7 @@ images byggs med pi-gen.
 | `kiosk/agent/kiosk_agent.py` | **Hjärtat.** Pollar API, beslutar vad som visas, styr Chromium. Endast Python-stdlib. |
 | `kiosk/bin/kiosk-session.sh` | X-session: skärmsläckare av, `matchbox`, valfri rotation, startar agenten. |
 | `kiosk/web/standby.html.tmpl` | Standby-/felsida (mall med `{{PLATSHÅLLARE}}`). |
-| `kiosk/systemd/flipperklubben-kiosk.service` | Startar X via `xinit` vid boot. |
+| `kiosk/config/bash_profile` | Körs vid autologin på tty1; startar `startx` → sessionen. |
 | `kiosk/config/kiosk.txt` | Redigerbar boot-config (hamnar på boot-partitionen). |
 | `kiosk/config/flipperklubben-kiosk.default` | Systemfallback i `/etc/default/`. |
 | `build/build.sh` | Orkestrerar pi-gen-bygget per modell. |
@@ -74,5 +74,8 @@ ska aldrig krascha utan falla tillbaka på standby.
   bygget oombett på en dev-maskin; föreslå det, kör det inte automatiskt.
 - WiFi (`flipperklubben`/`Magnetslingan10`) och SSH (användare `flipperklubben`,
   samma lösenord) bakas in i images – behandla `dist/` som känsligt.
-- `kiosk/systemd/*.service` kör X som användaren `kiosk` utan root via
-  `Xwrapper.config` (`allowed_users=anybody`). Ändra inte utan att förstå seat/logind.
+- Kiosken startas via **getty-autologin** av `kiosk` på tty1 +
+  `~/.bash_profile` → `startx` (inte en egen systemd-tjänst – den slogs om tty1
+  med getty). X körs utan root via `Xwrapper.config` (`allowed_users=anybody`);
+  DRM/KMS-access kommer från logind-seaten som autologin ger. Ändra inte tty/seat-
+  upplägget utan att förstå det. Sessionslogg: `/home/kiosk/kiosk-session.log`.

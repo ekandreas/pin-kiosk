@@ -51,6 +51,10 @@ som inte står säkert.
 
 ```sh
 ssh flipperklubben@<pi-ip>
-sudo systemctl restart flipperklubben-kiosk   # starta om kiosken
-journalctl -u flipperklubben-kiosk -f         # se loggar
+sudo systemctl restart getty@tty1             # starta om kiosken (autologin → startx)
+sudo cat /home/kiosk/kiosk-session.log        # agentens & sessionens logg
+sudo cat /home/kiosk/.local/share/xorg/Xorg.0.log  # X-serverns logg
 ```
+
+Kiosken startas via konsol-autologin av användaren `kiosk` på tty1, som kör
+`startx`. För att stoppa den tillfälligt: `sudo systemctl stop getty@tty1`.

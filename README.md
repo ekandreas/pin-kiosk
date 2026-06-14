@@ -133,7 +133,7 @@ Med standardvärden blir det `https://flipperklubben.se/api/monitors/2`.
    Boot (Raspberry Pi OS Lite)
         │
         ▼
-   systemd-tjänst ──► xinit ──► kiosk-session.sh
+   getty autologin (kiosk@tty1) ──► startx ──► kiosk-session.sh
                                    │  (skärmsläckare av, matchbox, ev. rotation)
                                    ▼
                             kiosk_agent.py  ──poll──►  /api/monitors/{id}

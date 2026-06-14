@@ -41,7 +41,7 @@ Avsluta med `Ctrl+C`.
 | `kiosk/agent/kiosk_agent.py` | Agenten: pollar API, beslutar, styr Chromium. Endast stdlib. |
 | `kiosk/bin/kiosk-session.sh` | X-session: skärmsläckare av, fönsterhanterare, startar agenten. |
 | `kiosk/web/standby.html.tmpl` | Standby-/felsida som visas när ingen slide finns. |
-| `kiosk/systemd/*.service` | systemd-tjänst som startar X vid boot. |
+| `kiosk/config/bash_profile` | Startar `startx` när `kiosk` autologgas in på tty1. |
 | `kiosk/config/*` | Default- och boot-konfiguration. |
 | `build/` | pi-gen-bygget (stage, config, modell-config, `build.sh`). |
 | `tests/` | Enhetstester. |

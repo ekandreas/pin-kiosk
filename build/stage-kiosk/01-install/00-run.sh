@@ -9,13 +9,20 @@ cp -r files/payload/agent  "${KIOSK_DIR}/"
 cp -r files/payload/bin    "${KIOSK_DIR}/"
 cp -r files/payload/web    "${KIOSK_DIR}/"
 chmod +x "${KIOSK_DIR}/bin/kiosk-session.sh" "${KIOSK_DIR}/agent/kiosk_agent.py"
-# Källkopia av boot-konfigurationen (används av export-fasen för att lägga
-# tillbaka kiosk.txt på boot-partitionen efter att firmware-steget repopulerat den).
+# Källkopior i rootfsen (kiosk.txt används även av export-fasen för att lägga
+# tillbaka filen på boot-partitionen; bash_profile installeras åt kiosk nedan).
 install -m 644 files/payload/config/kiosk.txt "${KIOSK_DIR}/kiosk.txt"
+install -m 644 files/payload/config/bash_profile "${KIOSK_DIR}/bash_profile"
 
-# --- systemd-tjänst ---------------------------------------------------------
-install -m 644 files/payload/systemd/flipperklubben-kiosk.service \
-    "${ROOTFS_DIR}/etc/systemd/system/flipperklubben-kiosk.service"
+# --- Autologin på tty1 ------------------------------------------------------
+# getty autologgar in kiosk-användaren på tty1; .bash_profile kör sedan startx.
+# Detta ersätter en egen X-tjänst och undviker konflikt om tty1.
+install -d "${ROOTFS_DIR}/etc/systemd/system/getty@tty1.service.d"
+cat > "${ROOTFS_DIR}/etc/systemd/system/getty@tty1.service.d/autologin.conf" <<'EOF'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin kiosk --noclear %I $TERM
+EOF
 
 # --- Konfiguration ----------------------------------------------------------
 install -m 644 files/payload/config/flipperklubben-kiosk.default \
@@ -67,7 +74,9 @@ done
 # Sätt WiFi-regulatorisk domän så att radion aktiveras.
 raspi-config nonint do_wifi_country SE || true
 
-# Boota till konsol (multi-user) – vår tjänst startar X.
+# Installera startprofilen åt kiosk-användaren (startar X på tty1).
+install -m 644 -o kiosk -g kiosk /opt/flipperklubben-kiosk/bash_profile /home/kiosk/.bash_profile
+
+# Boota till konsol (multi-user); autologin+startx tar över skärmen.
 systemctl set-default multi-user.target
-systemctl enable flipperklubben-kiosk.service
 EOF

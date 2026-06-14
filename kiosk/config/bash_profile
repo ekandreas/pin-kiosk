@@ -1,0 +1,8 @@
+# Flipperklubben Kiosk – startar X automatiskt när kiosk-användaren
+# autologgas in på tty1. På andra tty:er (eller via SSH) görs ingenting.
+# Sessionens utdata (inkl. agentens logg) sparas i ~/kiosk-session.log för
+# felsökning; X:s egen logg hamnar i ~/.local/share/xorg/Xorg.0.log.
+if [ -z "${DISPLAY:-}" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    exec startx /opt/flipperklubben-kiosk/bin/kiosk-session.sh -- -nocursor \
+        > "$HOME/kiosk-session.log" 2>&1
+fi
