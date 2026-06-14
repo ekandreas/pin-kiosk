@@ -9,6 +9,9 @@ cp -r files/payload/agent  "${KIOSK_DIR}/"
 cp -r files/payload/bin    "${KIOSK_DIR}/"
 cp -r files/payload/web    "${KIOSK_DIR}/"
 chmod +x "${KIOSK_DIR}/bin/kiosk-session.sh" "${KIOSK_DIR}/agent/kiosk_agent.py"
+# Källkopia av boot-konfigurationen (används av export-fasen för att lägga
+# tillbaka kiosk.txt på boot-partitionen efter att firmware-steget repopulerat den).
+install -m 644 files/payload/config/kiosk.txt "${KIOSK_DIR}/kiosk.txt"
 
 # --- systemd-tjänst ---------------------------------------------------------
 install -m 644 files/payload/systemd/flipperklubben-kiosk.service \

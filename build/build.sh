@@ -38,15 +38,23 @@ else
     log "Använder befintlig pi-gen i $PIGEN_DIR"
 fi
 
-# Återställ pi-gen-klonen till orört läge så att bygget blir deterministiskt
-# oavsett patchar från tidigare körningar.
+# Återställ pi-gen-klonen till orört läge så att bygget blir deterministiskt.
 git -C "$PIGEN_DIR" checkout -- . 2>/dev/null || true
+git -C "$PIGEN_DIR" clean -fdq export-image 2>/dev/null || true
 find "$PIGEN_DIR" -name '*.bak' -delete 2>/dev/null || true
-find "$PIGEN_DIR" -name '*.bak2' -delete 2>/dev/null || true
 
-# Slopa stage2:s image-export ("-lite") – vi vill bara ha den färdiga
-# kiosk-imagen. Stage2-rootfsen byggs fortfarande som bas för vår stage.
+# Slopa stage2:s image-export ("-lite") – vi vill bara ha kiosk-imagen.
 rm -f "$PIGEN_DIR/stage2/EXPORT_IMAGE" "$PIGEN_DIR/stage2/EXPORT_NOOBS" 2>/dev/null || true
+
+# Säkerhetsnät: kopiera kiosk.txt till boot-partitionen allra sist i export-
+# fasen (precis före unmount i 05-finalise, efter update-initramfs och alla
+# andra boot-rörande steg). Garanterar att den redigerbara konfigurationen
+# finns på boot-partitionen i den färdiga imagen, oavsett vad firmware-/kernel-
+# hooks gör med /boot/firmware under bygget.
+# Källan /opt/flipperklubben-kiosk/kiosk.txt läggs i rootfsen av stage-kiosk.
+FIN="$PIGEN_DIR/export-image/05-finalise/01-run.sh"
+awk '/^unmount /{print "cp \"${ROOTFS_DIR}/opt/flipperklubben-kiosk/kiosk.txt\" \"${ROOTFS_DIR}/boot/firmware/kiosk.txt\" 2>/dev/null || true"} {print}' "$FIN" > "$FIN.tmp" && mv "$FIN.tmp" "$FIN"
+chmod +x "$FIN"
 
 mkdir -p "$DIST"
 
