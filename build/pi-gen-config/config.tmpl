@@ -3,7 +3,9 @@
 
 IMG_NAME="__IMG_NAME__"
 PI_GEN_RELEASE="Flipperklubben Kiosk"
-RELEASE="bookworm"
+# trixie = nuvarande Raspberry Pi OS / Debian stable (2025–). pi-gens arm64-
+# branch riktar sig mot trixie; bygg därför trixie för att slippa mismatchar.
+RELEASE="trixie"
 
 # Bootar till konsol; vår systemd-tjänst startar X/Chromium.
 TARGET_HOSTNAME="kiosk"

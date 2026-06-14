@@ -1,5 +1,6 @@
 # pi-gen och byggartefakter
 build/pi-gen/
+build/logs/
 build/stage-kiosk/01-install/files/payload/
 build/stage-kiosk/02-config/files/
 dist/

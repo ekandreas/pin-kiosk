@@ -38,7 +38,7 @@ API:t `GET /api/monitors/{id}` och visar den `url` som returneras i fullskärm
 
 ## Operativsystem
 
-**Raspberry Pi OS Lite (Bookworm, 64-bit).** Valt för att det är:
+**Raspberry Pi OS Lite (Trixie, 64-bit).** Valt för att det är:
 
 - **Lätt** – ingen skrivbordsmiljö, bara det vi själva lägger till
   (X.Org, en minimal fönsterhanterare `matchbox` och Chromium).
@@ -161,12 +161,28 @@ Bygget använder pi-gen och kräver en **Debian/Ubuntu-host** (eller Docker).
 USE_DOCKER=1 ./build/build.sh pi4
 ```
 
-Färdiga images hamnar i `dist/`. SSH-användaren blir `flipperklubben` med
-lösenordet `Magnetslingan10` (samma som WiFi). Byt vid behov:
+Färdiga images hamnar i `dist/` (zip-paketerade `.img`, ca 1 GB/styck).
+SSH-användaren blir `flipperklubben` med lösenordet `Magnetslingan10` (samma
+som WiFi). Byt vid behov:
 
 ```sh
 FIRST_USER_PASS='ett-bra-lösenord' ./build/build.sh
 ```
+
+### Bygga på macOS (Apple Silicon)
+
+Fungerar via Docker. Eftersom Docker-VM:en på en M-chip är arm64 byggs
+Raspberry Pi-imagen **nativt utan qemu-emulering**. `build.sh` hanterar de
+pi-gen-quirks som annars stoppar ett arm64-bygge (qemu-binfmt och
+beroendekontroller). Med [Colima](https://github.com/abiosoft/colima):
+
+```sh
+brew install colima docker
+colima start --cpu 4 --memory 6 --disk 40
+USE_DOCKER=1 ./build/build.sh pi4   # ~6 min per modell
+```
+
+Ett pi4-bygge är verifierat end-to-end på detta sätt.
 
 Mer detaljer och felsökning: [docs/development.md](docs/development.md).
 

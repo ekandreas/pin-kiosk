@@ -2,20 +2,22 @@
 
 ## 1. Skaffa en image
 
-Antingen ladda ner en färdig `.img`/`.img.xz` från projektets releaser, eller
-bygg själv (se [README](../README.md#bygga-images)). Filerna heter t.ex.:
+Antingen ladda ner en färdig image från projektets releaser, eller bygg själv
+(se [README](../README.md#bygga-images)). Filerna är zip-paketerade `.img` och
+heter t.ex.:
 
-- `flipperklubben-kiosk-pi3-*.img.xz`
-- `flipperklubben-kiosk-pi4-*.img.xz`
-- `flipperklubben-kiosk-pi5-*.img.xz`
+- `image_<datum>-flipperklubben-kiosk-pi3.zip`
+- `image_<datum>-flipperklubben-kiosk-pi4.zip`
+- `image_<datum>-flipperklubben-kiosk-pi5.zip`
 
-Välj den som matchar din Raspberry Pi.
+Välj den som matchar din Raspberry Pi. (Raspberry Pi Imager läser zip-filen
+direkt – du behöver inte packa upp den.)
 
 ## 2. Skriv till SD-kort
 
 Använd **Raspberry Pi Imager** (rekommenderas) eller **balenaEtcher**:
 
-1. Välj "Use custom image" och peka på `.img.xz`-filen.
+1. Välj "Use custom image" och peka på `.zip`-filen.
 2. Välj ditt SD-kort.
 3. Skriv. (Hoppa över Imagerns OS-anpassningar – allt är redan inbakat.)
 

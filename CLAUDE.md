@@ -8,7 +8,7 @@ AI-assistenter) kontext om projektet. Läs den först – då blir hjälpen rät
 Flipperklubben Kiosk: en helskärms-kiosk för Raspberry Pi 3/4/5. Enheten
 pollar ett publikt API (`GET /api/monitors/{id}`) och visar den `url` som
 returneras i fullskärm via Chromium. Saknas konfiguration/nätverk visas en
-lokal standby-sida. OS:et är Raspberry Pi OS Lite (Bookworm, 64-bit) och
+lokal standby-sida. OS:et är Raspberry Pi OS Lite (Trixie, 64-bit) och
 images byggs med pi-gen.
 
 ## Karta över koden

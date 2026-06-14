@@ -38,6 +38,16 @@ else
     log "Använder befintlig pi-gen i $PIGEN_DIR"
 fi
 
+# Återställ pi-gen-klonen till orört läge så att bygget blir deterministiskt
+# oavsett patchar från tidigare körningar.
+git -C "$PIGEN_DIR" checkout -- . 2>/dev/null || true
+find "$PIGEN_DIR" -name '*.bak' -delete 2>/dev/null || true
+find "$PIGEN_DIR" -name '*.bak2' -delete 2>/dev/null || true
+
+# Slopa stage2:s image-export ("-lite") – vi vill bara ha den färdiga
+# kiosk-imagen. Stage2-rootfsen byggs fortfarande som bas för vår stage.
+rm -f "$PIGEN_DIR/stage2/EXPORT_IMAGE" "$PIGEN_DIR/stage2/EXPORT_NOOBS" 2>/dev/null || true
+
 mkdir -p "$DIST"
 
 # --- Bygg per modell --------------------------------------------------------
@@ -74,6 +84,22 @@ for model in "${MODELS[@]}"; do
         cd "$PIGEN_DIR"
         if [ "${USE_DOCKER:-0}" = "1" ]; then
             log "Bygger i Docker …"
+            # Vid native arm64-bygge behövs ingen qemu-emulering, men pi-gen kör
+            # ändå dpkg-reconfigure qemu-user-binfmt vilket failar och kortsluter
+            # &&-kedjan (cd /pi-gen hoppas över → ./build.sh hittas inte). Gör
+            # steget feltolerant.
+            sed -i.bak2 's#dpkg-reconfigure qemu-user-binfmt &&#(dpkg-reconfigure qemu-user-binfmt || true) \&\&#' build-docker.sh
+            # På native arm64 (t.ex. Apple Silicon) behövs ingen qemu alls, men
+            # pi-gens dependency_check kräver ändå kommandot qemu-arm. Ta bort
+            # det kravet just då. På x86-host lämnas det kvar (qemu krävs för cross-build).
+            DOCKER_ARCH="$(docker info --format '{{.Architecture}}' 2>/dev/null || echo unknown)"
+            if [ "$DOCKER_ARCH" = "aarch64" ] || [ "$DOCKER_ARCH" = "arm64" ]; then
+                log "Native arm64-motor ($DOCKER_ARCH) – tar bort qemu-kravet ur depends"
+                sed -i.bak '/qemu-arm:qemu-user-binfmt/d' depends
+            fi
+            # Rensa ev. container från en tidigare (misslyckad) körning så att
+            # build-docker.sh inte fastnar på en interaktiv fråga.
+            docker rm -f pigen_work >/dev/null 2>&1 || true
             ./build-docker.sh -c "config-${model}"
         else
             [ "$(id -u)" -eq 0 ] || log "Tips: pi-gen kräver root – kör med sudo om bygget avbryts."
@@ -81,10 +107,18 @@ for model in "${MODELS[@]}"; do
         fi
     )
 
-    # Samla resultat.
-    if compgen -G "$PIGEN_DIR/deploy/*flipperklubben-kiosk-${model}*.img*" > /dev/null; then
-        cp -v "$PIGEN_DIR"/deploy/*flipperklubben-kiosk-${model}*.img* "$DIST/"
-    fi
+    # Samla resultat. pi-gen lägger images i deploy/ med varierande ändelse
+    # (.zip/.img/.img.xz beroende på komprimering). Kopiera image-filer för
+    # denna modell till dist/, men hoppa över .info/.log och ev. -lite.
+    found=0
+    for f in "$PIGEN_DIR"/deploy/*"flipperklubben-kiosk-${model}"*; do
+        [ -e "$f" ] || continue
+        case "$f" in
+            *-lite*|*.info|*.log) continue ;;
+            *.zip|*.img|*.img.gz|*.img.xz) cp -v "$f" "$DIST/"; found=1 ;;
+        esac
+    done
+    [ "$found" = 1 ] || log "VARNING: hittade ingen image för $model i $PIGEN_DIR/deploy/"
     log "=== Klart: $model ==="
 done
 
